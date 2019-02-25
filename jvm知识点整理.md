@@ -131,6 +131,17 @@ G1收集器的运作大致可划分为以下几个步骤：
 3. 最终标记（STW）；修正并发标记过程中，产生的记录裱花。可以并行执行
 4. 筛选回收；对各个Region的回收价值和成本进行排序，根据用户所期望的GC停顿时间来指定回收计划。
 
+## 内存分配与回收策略
+### 对象优先在eden分配
+### 大对象直接进入老年代
+### 长期存活的对象将进入老年代
+### 动态对象年龄判定
+### 空间分配担保
+发生minor gc之前，虚拟机会先检查老年代最大可用的连续空间是否大于新生代所有对象总空间。如果大于，则此次Minor GC是安全的。如果小于，则虚拟机会查看HandlePromotionFailure设置值是否允许担保失败。
+
+如果HandlePromotionFailure=true，那么会继续检查老年代最大可用连续空间是否大于历次晋升到老年代的对象的平均大小，如果大于，则尝试进行一次Minor GC，但这次Minor GC依然是有风险的；如果小于或者HandlePromotionFailure=false，则改为进行一次Full GC。
+
+在JDK6 Update24之后，HandlePromotionFailure参数不会再影响到虚拟机的空间分配担保策略，规则变为只要老年代的连续空间大于新生代对象总大小或者历次晋升的平均大小就会进行Minor GC，否则将进行Full GC。
 
 # java类加载机制
 [深入理解Java 类加载全过程](https://www.jianshu.com/p/0ff696876f26)

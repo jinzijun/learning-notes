@@ -1,3 +1,4 @@
+[mybatis官方文档](http://www.mybatis.org/mybatis-3/zh/index.html)
 [原视频链接](https://www.bilibili.com/video/av36939017)
 # mybatis核心流程三大阶段
 ## 初始化阶段
