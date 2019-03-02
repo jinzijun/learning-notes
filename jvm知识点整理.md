@@ -128,11 +128,31 @@
 G1收集器的运作大致可划分为以下几个步骤：
 1. 初始标记（STW）；标记GC Roots引用的对象
 2. 并发标记；可达性分析。
-3. 最终标记（STW）；修正并发标记过程中，产生的记录裱花。可以并行执行
+3. 最终标记（STW）；修正并发标记过程中，产生的记录变化。可以并行执行
 4. 筛选回收；对各个Region的回收价值和成本进行排序，根据用户所期望的GC停顿时间来指定回收计划。
 
 ## 垃圾收集器搭配关系
 ![image](https://github.com/jinzijun/learning-notes/blob/master/images/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8%E6%90%AD%E9%85%8D%E5%85%B3%E7%B3%BB.jpg)
+
+## 垃圾收集相关的常用参数
+参数 | 描述
+--- | ---
+UseSerialGC | 虚拟机运行在Client模式下的默认值，打开此开关后，使用Serial + Serial Old的收集器组合进行内存回收
+UseParNewGC | 打开此开关后，使用ParNew + Serial Old的收集器组合进行内存回收
+UseConcMarkSweepGC | 打开此开关后，使用ParNew + CMS + Serial Old的收集器组合进行内存回收。Serial Old收集器将作为CMS收集器出现Concurrent Mode Failure失败后的后备收集器使用
+UseParallelGC | 虚拟机运行在Server模式下的默认值，打开此开关后，使用Parallel Scavenge + Serial Old（PS MarkSweep）的收集器组合进行内存回收
+UseParallelOldGC | 打开此开关后，使用Parallel Scavenge + Parallel Old 的收集器组合进行内存回收
+SurvivorRatio | 新生代中Eden区域与Survivor区域的容量比值，默认为8，代表Eden : Survivor=8:1
+PretenureSizeThreshold | 直接晋升到老年代的对象大小，设置这个参数后，大于这个参数的对象将直接在老年代分配
+MaxTenuringThreshold | 晋升到老年代的对象年龄。每个对象在坚持过一次Minor GC之后，年龄就增加1，当超过这个参数值时就进入老年代
+UseAdaptiveSizePolicy | 动态调整Java堆中各个区域的大小以及进入老年代的年龄
+HandlePromotionFailure | 是否允许分配担保失败，即老年代的剩余空间不足以应付新生代的整个Eden和Survivor区的所有对象都存活的极端情况
+ParallelGCThreads | 设置并行GC时进行内存回收的线程数
+GCTimeRatio | GC时间占总时间的比率，默认值为99，即允许1%的GC时间。仅使用Parallel Scavenge收集器时生效
+MaxGCPauseMillis | 设置GC的最大停顿时间。仅在使用Parallel Scavenge收集器生效
+CMSInitiatingOccupancyFraction | 设置CMS收集器在老年代空间被使用多少后触发垃圾收集，默认值为68%，仅使用CMS收集器时生效
+UseCMSCompactAtFullCollection | 设置CMS收集器在完成垃圾收集后是否要进行一次内存碎片整理。仅在使用CMS收集器时生效
+CMSFullGCsBeforeCompaction | 设置CMS收集器在进行若干次垃圾收集后再启动一次内存碎片整理。仅在使用CMS收集器时生效
 
 ## 内存分配与回收策略
 ### 对象优先在eden分配
