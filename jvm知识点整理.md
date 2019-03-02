@@ -132,7 +132,7 @@ G1收集器的运作大致可划分为以下几个步骤：
 4. 筛选回收；对各个Region的回收价值和成本进行排序，根据用户所期望的GC停顿时间来指定回收计划。
 
 ## 垃圾收集器搭配关系
-![image](../images/垃圾收集器搭配关系.jpg)
+![image](https://github.com/jinzijun/learning-notes/blob/master/images/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8%E6%90%AD%E9%85%8D%E5%85%B3%E7%B3%BB.jpg)
 
 ## 内存分配与回收策略
 ### 对象优先在eden分配
